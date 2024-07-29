@@ -1,0 +1,40 @@
+services:
+  order-service:
+    image: order-service
+    build:
+      context: services/order-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:1323"
+    depends_on:
+      - db
+    environment:
+      - DB_USER=postgres
+      - DB_NAME=shipping_logistics
+      - DB_HOST=db
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+      
+  inventory-service:
+    image: inventory-service
+    build:
+      context: services/inventory-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:1323"
+    depends_on:
+      - db
+    environment:
+      - DB_USER=postgres
+      - DB_NAME=shipping_logistics
+      - DB_HOST=db
+      - DB_PASSWORD=password
+      - DB_PORT=5432
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: shipping_logistics
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
