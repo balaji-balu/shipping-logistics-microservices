@@ -1,5 +1,5 @@
 version: v2beta1
-name: order-service
+name: inventory-service
 
 # This is a list of `pipelines` that DevSpace can execute (you can define your own)
 pipelines:
@@ -9,7 +9,7 @@ pipelines:
       run_dependencies --all       # 1. Deploy any projects this project needs (see "dependencies")
       ensure_pull_secrets --all    # 2. Ensure pull secrets
       create_deployments --all     # 3. Deploy Helm charts and manifests specfied as "deployments"
-      start_dev app                # 4. Start dev mode "app" (see "dev" section)
+      start_dev inventory-service                # 4. Start dev mode "app" (see "dev" section)
   # You can run this pipeline via `devspace deploy` (or `devspace run-pipeline deploy`)
   deploy:
     run: |-
@@ -21,13 +21,13 @@ pipelines:
 # This is a list of `images` that DevSpace can build for this project
 # We recommend to skip image building during development (devspace dev) as much as possible
 images:
-  app:
-    image: bbalu/order-service:latest
+  inventory-service:
+    image: bbalu/inventory-service
     dockerfile: ./Dockerfile
 
 # This is a list of `deployments` that DevSpace can create for this project
 deployments:
-  app:
+  inventory-service:
     # This deployment uses `helm` but you can also define `kubectl` deployments or kustomizations
     helm:
       # We are deploying this project with the Helm chart you provided
@@ -38,16 +38,16 @@ deployments:
       # You may also use `valuesFiles` to load values from files, e.g. valuesFiles: ["values.yaml"]
       values:
         containers:
-          - image: balaji.balu@gmail.com/app
+          - image: bbalu/inventory-service
         service:
           ports:
             - port: 1323
 
 # This is a list of `dev` containers that are based on the containers created by your deployments
 dev:
-  app:
+  inventory-service:
     # Search for the container that runs this image
-    imageSelector: bbalu/order-service:latest
+    imageSelector: bbalu/inventory-service
     # Replace the container image with this dev-optimized image (allows to skip image building during development)
     devImage: ghcr.io/loft-sh/devspace-containers/go:1.18-alpine
     # Sync files between the local filesystem and the development container
